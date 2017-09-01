@@ -90,6 +90,7 @@ void loop() {
       sendPackage();
       lastTransmission = millis();
       printInputs();
+      printPackage();
     }
 
   }

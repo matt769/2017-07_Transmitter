@@ -42,9 +42,9 @@ void mapInputs(){
   joystickBx = map(joystickBx,0,1023,1000,2000);
   joystickBy = map(joystickBy,0,1023,1000,2000);
   joystickBb = !joystickBb;
+  buttonC = !buttonC;
+  buttonD = !buttonD;
 }
-
-
 
 
 void printInputs(){
