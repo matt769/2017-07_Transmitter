@@ -1,0 +1,107 @@
+
+// Read inputs (freq?)
+// provide package for the radio (freq?)
+// update LCD
+
+// how long to the LCD updates take?
+
+// ADD LATER
+// setup/calibration
+// store in EEPROM
+// menus via LCD
+// need to be able to go into menus while transmitting?
+// have transmitting turned on by a switch or menu?
+// battery monitor - need to check separately that is does not interfere with analog reads
+// option to display input values on LCD
+// get some status information in acknowledgement from receiver
+
+// add option to show all input values
+
+
+#include <ShiftedLCD.h> //allows using the LCD as if there were no shift register between in and ATMEGA
+#include <SPI.h>
+#include "RF24.h"
+
+
+
+// INPUT VARIABLES
+int joystickAx;
+int joystickAy;
+byte joystickAb;
+int joystickBx;
+int joystickBy;
+byte joystickBb;
+byte buttonC;
+byte buttonD;
+
+// OUTPUTS
+const byte pinLedGreen = 5;
+const byte pinLedRed = 6;
+
+// LCD
+byte pinLcdSlaveSelect = 10;
+LiquidCrystal lcd(pinLcdSlaveSelect);
+
+// RADIO
+byte addresses[][6] = {"1Node", "2Node"};
+bool radioNumber = 0; // receiver should be 1 (or anythin not 0)
+RF24 radio(8, 7); // CE, CSN (SPI SS)
+
+struct dataStruct {
+  int throttle; // number 0 to 1000
+  int pitch;    // number 0 to 1000
+  int roll;     // number 0 to 1000
+  int yaw;     // number 0 to 1000
+  byte control; // for some control bits
+  byte checksum;
+} rcPackage;
+
+int txFreq = 500; // in milliseconds i.e. txFreq = 100 ==> 1000/100 = 10Hz
+// actual frequency will be slightly lower
+unsigned long lastTransmission = 0;
+unsigned long lastAcknowledgement = 0;
+bool txSuccess = false;
+
+// STATES
+enum states {STANDBY, TRANSMITTING, TX_ERROR};
+enum states controllerState;
+
+
+
+void setup() {
+
+  Serial.begin(115200);
+
+  setupInputs();
+  setupOutputs();
+  setupRadio();
+
+  controllerState = TRANSMITTING;  // for testing
+
+} // SETUP
+
+
+void loop() {
+  if (controllerState == TRANSMITTING) {
+    readInputs();
+    mapInputs();
+    buildPackage();
+    if (millis() - lastTransmission > txFreq) {
+      sendPackage();
+      lastTransmission = millis();
+      printInputs();
+    }
+
+  }
+  updateOutputs();
+
+} // LOOP
+
+
+
+
+
+
+
+
+
