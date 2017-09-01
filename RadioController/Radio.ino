@@ -9,6 +9,10 @@ void setupRadio() {
   radio.begin();
   radio.setPALevel(RF24_PA_LOW);  // MIN, LOW, HIGH, MAX
   // Open a writing and reading pipe on each radio, MUST BE OPPOSITE addresses to the receiver
+  radio.enableAckPayload();
+  radio.enableDynamicPayloads();
+  radio.setDataRate(RF24_250KBPS);
+
   radio.openWritingPipe(addresses[0]);
   radio.openReadingPipe(1, addresses[1]);
 }
@@ -43,6 +47,8 @@ void buildPackage() {
 
 void sendPackage() {
   txSuccess = radio.write( &rcPackage, sizeof(rcPackage));
+  Serial.println(txSuccess);
+
 }
 
 

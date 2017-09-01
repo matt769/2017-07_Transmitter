@@ -61,6 +61,7 @@ int txFreq = 500; // in milliseconds i.e. txFreq = 100 ==> 1000/100 = 10Hz
 unsigned long lastTransmission = 0;
 unsigned long lastAcknowledgement = 0;
 bool txSuccess = false;
+byte ack = 0;
 
 // STATES
 enum states {STANDBY, TRANSMITTING, TX_ERROR};
@@ -89,9 +90,18 @@ void loop() {
     if (millis() - lastTransmission > txFreq) {
       sendPackage();
       lastTransmission = millis();
-      printInputs();
+      //      printInputs();
       printPackage();
+      //      Serial.println(txSuccess);
+
+      if (radio.isAckPayloadAvailable()) {
+        radio.read(&ack, sizeof(ack));
+        Serial.print(F("Acknowledgement: ")); Serial.println(ack);
+      }
+
     }
+
+
 
   }
   updateOutputs();
