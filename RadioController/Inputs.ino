@@ -2,9 +2,9 @@
 const byte pinJoystickAx = A4;
 const byte pinJoystickAy = A3;
 const byte pinJoystickAb = A5;
-const byte pinJoystickBx = A0;
-const byte pinJoystickBy = A1;
-const byte pinJoystickBb = A2;
+const byte pinJoystickBx = A2;
+const byte pinJoystickBy = A0;
+const byte pinJoystickBb = A1;
 const byte pinButtonC = 3;    // push button
 const byte pinButtonD = 4;    // toggle switch
 
@@ -28,6 +28,7 @@ void readInputs() {
   joystickAy = analogRead(pinJoystickAy);
   joystickAb = digitalRead(pinJoystickAb);
   joystickBx = analogRead(pinJoystickBx);
+//  Serial.println(joystickBx);
   joystickBy = analogRead(pinJoystickBy);
   joystickBb = digitalRead(pinJoystickBb);
   buttonC = digitalRead(pinButtonC);
@@ -40,7 +41,7 @@ void mapInputs(){
   joystickAy = map(joystickAy,1023,0,1000,2000);  // NOTE REVERSED
   joystickAb = !joystickAb;
   joystickBx = map(joystickBx,0,1023,1000,2000);
-  joystickBy = map(joystickBy,0,1023,1000,2000);
+  joystickBy = map(joystickBy,1023,0,1000,2000);
   joystickBb = !joystickBb;
   buttonC = !buttonC;
   buttonD = !buttonD;

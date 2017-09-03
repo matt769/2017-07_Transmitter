@@ -36,10 +36,10 @@ void setupRadio() {
 
 byte calculateCheckSum(){
   byte sum = 0;
-  sum += rcPackage.throttle;
-  sum += rcPackage.pitch;
-  sum += rcPackage.roll;
-  sum += rcPackage.yaw;
+  sum += rcPackage.inputOne;
+  sum += rcPackage.inputTwo;
+  sum += rcPackage.inputThree;
+  sum += rcPackage.inputFour;
   sum += rcPackage.control;
   sum = 1 - sum;
   return sum;
@@ -49,10 +49,10 @@ byte calculateCheckSum(){
 
 
 void buildPackage() {
-  rcPackage.throttle = joystickAy;
-  rcPackage.pitch = joystickBy;
-  rcPackage.roll = joystickBx;
-  rcPackage.yaw = joystickAx;
+  rcPackage.inputOne = joystickAy;
+  rcPackage.inputTwo = joystickBx;
+  rcPackage.inputThree = joystickBy;
+  rcPackage.inputFour = joystickAx;
 
   byte tmp = 0;
   tmp |= joystickAb << 0;
@@ -71,11 +71,11 @@ void sendPackage() {
 
 
 void printPackage(){
-  Serial.print(rcPackage.throttle);Serial.print('\t');
-  Serial.print(rcPackage.pitch);Serial.print('\t');
-  Serial.print(rcPackage.roll);Serial.print('\t');
-  Serial.print(rcPackage.yaw);Serial.print('\t');
+  Serial.print(rcPackage.inputOne);Serial.print('\t');
+  Serial.print(rcPackage.inputTwo);Serial.print('\t');
+  Serial.print(rcPackage.inputThree);Serial.print('\t');
+  Serial.print(rcPackage.inputFour);Serial.print('\t');
   Serial.print(rcPackage.control);Serial.print('\t');
-  Serial.print(rcPackage.checksum);Serial.print('\n');
+  Serial.print(rcPackage.checksum);Serial.print('\t');
 }
 
