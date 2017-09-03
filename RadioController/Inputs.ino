@@ -37,11 +37,11 @@ void readInputs() {
 
 // add calibration later
 void mapInputs(){
-  joystickAx = map(joystickAx,0,1023,1000,2000);
-  joystickAy = map(joystickAy,1023,0,1000,2000);  // NOTE REVERSED
+  joystickAx = map(joystickAx,0,1023,0,255);
+  joystickAy = map(joystickAy,1023,0,0,255);  // NOTE REVERSED
   joystickAb = !joystickAb;
-  joystickBx = map(joystickBx,0,1023,1000,2000);
-  joystickBy = map(joystickBy,1023,0,1000,2000);
+  joystickBx = map(joystickBx,0,1023,0,255);
+  joystickBy = map(joystickBy,1023,0,0,255);
   joystickBb = !joystickBb;
   buttonC = !buttonC;
   buttonD = !buttonD;

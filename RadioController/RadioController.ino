@@ -1,5 +1,5 @@
-// FIX LLOSE CONNECTION ON STICK B GND
-
+// FIX LOOSE CONNECTION ON STICK B GND
+// ADD DEBOUNCE TO BUTTONS
 
 // Read inputs (freq?)
 // provide package for the radio (freq?)

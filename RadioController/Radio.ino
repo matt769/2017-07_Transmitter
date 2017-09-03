@@ -56,8 +56,8 @@ void buildPackage() {
 
   byte tmp = 0;
   tmp |= joystickAb << 0;
-  tmp |= buttonD << 3;  
-  tmp |= joystickBb << 4;
+  tmp |= buttonD << 2;  
+  tmp |= joystickBb << 3;
   tmp |= buttonC << 7;
   rcPackage.control = tmp;
 
