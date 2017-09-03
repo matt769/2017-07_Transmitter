@@ -13,8 +13,13 @@ void setupRadio() {
   radio.enableDynamicPayloads();
   radio.setDataRate(RF24_250KBPS);
 
-  radio.openWritingPipe(addresses[0]);
-  radio.openReadingPipe(1, addresses[1]);
+  if(radioNumber){
+    radio.openWritingPipe(addresses[1]);
+    radio.openReadingPipe(1,addresses[0]);
+  }else{
+    radio.openWritingPipe(addresses[0]);
+    radio.openReadingPipe(1,addresses[1]);
+  }
 }
 
 
@@ -27,6 +32,20 @@ void setupRadio() {
 // bit 5: 
 // bit 6: 
 // bit 7; 1 = TURN OFF MOTORS                     Push button
+
+
+byte calculateCheckSum(){
+  byte sum = 0;
+  sum += rcPackage.throttle;
+  sum += rcPackage.pitch;
+  sum += rcPackage.roll;
+  sum += rcPackage.yaw;
+  sum += rcPackage.control;
+  sum = 1 - sum;
+  return sum;
+}
+
+
 
 
 void buildPackage() {
@@ -42,13 +61,12 @@ void buildPackage() {
   tmp |= buttonC << 7;
   rcPackage.control = tmp;
 
-  rcPackage.checksum = 1; // placeholder
+  rcPackage.checksum = calculateCheckSum(); // placeholder
 }
 
 void sendPackage() {
+  radio.flush_rx();
   txSuccess = radio.write( &rcPackage, sizeof(rcPackage));
-  Serial.println(txSuccess);
-
 }
 
 

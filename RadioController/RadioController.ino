@@ -49,14 +49,14 @@ RF24 radio(8, 7); // CE, CSN (SPI SS)
 
 struct dataStruct {
   int throttle; // number 0 to 1000
-  int pitch;    // number 0 to 1000
   int roll;     // number 0 to 1000
+  int pitch;    // number 0 to 1000
   int yaw;     // number 0 to 1000
   byte control; // for some control bits
   byte checksum;
 } rcPackage;
 
-int txFreq = 500; // in milliseconds i.e. txFreq = 100 ==> 1000/100 = 10Hz
+int txFreq = 20; // in milliseconds i.e. txFreq = 100 ==> 1000/100 = 10Hz
 // actual frequency will be slightly lower
 unsigned long lastTransmission = 0;
 unsigned long lastAcknowledgement = 0;
@@ -87,16 +87,22 @@ void loop() {
     readInputs();
     mapInputs();
     buildPackage();
+    
     if (millis() - lastTransmission > txFreq) {
+      printPackage();
       sendPackage();
       lastTransmission = millis();
       //      printInputs();
-      printPackage();
+
       //      Serial.println(txSuccess);
 
+      Serial.print(F("Acknowledgement: "));
       if (radio.isAckPayloadAvailable()) {
         radio.read(&ack, sizeof(ack));
-        Serial.print(F("Acknowledgement: ")); Serial.println(ack);
+        Serial.println(ack);
+      }
+      else {
+        Serial.println(F("None"));
       }
 
     }
