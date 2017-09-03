@@ -26,25 +26,76 @@ void setupInputs() {
 void readInputs() {
   joystickAx = analogRead(pinJoystickAx);
   joystickAy = analogRead(pinJoystickAy);
-  joystickAb = digitalRead(pinJoystickAb);
+  joystickAbTmp = digitalRead(pinJoystickAb);
   joystickBx = analogRead(pinJoystickBx);
 //  Serial.println(joystickBx);
   joystickBy = analogRead(pinJoystickBy);
-  joystickBb = digitalRead(pinJoystickBb);
-  buttonC = digitalRead(pinButtonC);
-  buttonD = digitalRead(pinButtonD);
+  joystickBbTmp = digitalRead(pinJoystickBb);
+  buttonCTmp = digitalRead(pinButtonC);
+  buttonDTmp = digitalRead(pinButtonD);
 }
+
+  unsigned long joystickAbLastDebounceTime = 0;
+  unsigned long joystickBbLastDebounceTime = 0;
+  unsigned long buttonCLastDebounceTime = 0;
+  unsigned long buttonDLastDebounceTime = 0;
+  byte joystickAbPrevious = 0;  // DEFAULT LOW
+  byte joystickBbPrevious = 0;  // DEFAULT LOW
+  byte buttonCPrevious = 0;  // DEFAULT LOW
+  byte buttonDPrevious = 0;  // DEFAULT LOW
+
+
+void debounceInputs() {
+  static unsigned long debounceDelay = 50;
+
+  if(joystickAbTmp != joystickAbPrevious){
+    joystickAbLastDebounceTime = millis();
+  }
+  if(joystickBbTmp != joystickBbPrevious){
+    joystickBbLastDebounceTime = millis();
+  }
+  if(buttonCTmp != buttonCPrevious){
+    buttonCLastDebounceTime = millis();
+  }
+  if(buttonDTmp != buttonDPrevious){
+    buttonDLastDebounceTime = millis();
+  }
+  if(millis() - joystickAbLastDebounceTime > debounceDelay){
+    joystickAb = joystickAbTmp;
+  }
+  if(millis() - joystickBbLastDebounceTime > debounceDelay){
+    joystickBb = joystickBbTmp;
+  }
+  if(millis() - buttonCLastDebounceTime > debounceDelay){
+    buttonC = buttonCTmp;
+  }
+  if(millis() - buttonDLastDebounceTime > debounceDelay){
+    buttonD = buttonDTmp;
+  }
+
+  joystickAbPrevious = joystickAbTmp;
+  joystickBbPrevious = joystickBbTmp;
+  buttonCPrevious = buttonCTmp;
+  buttonDPrevious = buttonDTmp;
+  
+}
+
+
+
+
+
+
 
 // add calibration later
 void mapInputs(){
   joystickAx = map(joystickAx,0,1023,0,255);
   joystickAy = map(joystickAy,1023,0,0,255);  // NOTE REVERSED
-  joystickAb = !joystickAb;
+  joystickAb = !joystickAbPrevious;
   joystickBx = map(joystickBx,0,1023,0,255);
   joystickBy = map(joystickBy,1023,0,0,255);
-  joystickBb = !joystickBb;
-  buttonC = !buttonC;
-  buttonD = !buttonD;
+  joystickBb = !joystickBbPrevious;
+  buttonC = !buttonCPrevious;
+  buttonD = !buttonDPrevious;
 }
 
 

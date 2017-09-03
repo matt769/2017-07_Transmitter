@@ -29,11 +29,15 @@
 // INPUT VARIABLES
 int joystickAx;
 int joystickAy;
+byte joystickAbTmp;
 byte joystickAb;
 int joystickBx;
 int joystickBy;
+byte joystickBbTmp;
 byte joystickBb;
+byte buttonCTmp;
 byte buttonC;
+byte buttonDTmp;
 byte buttonD;
 
 // OUTPUTS
@@ -87,6 +91,7 @@ void setup() {
 void loop() {
   if (controllerState == TRANSMITTING) {
     readInputs();
+    debounceInputs();
     mapInputs();
     buildPackage();
     
