@@ -70,29 +70,40 @@ bool txSuccess = false;
 byte ack = 0;
 
 // STATES
-enum states {STANDBY, TRANSMITTING, TX_ERROR};
+enum states {STANDBY, TRANSMITTING, TX_ERROR, CALIBRATE_STICKS};
 enum states controllerState;
 
 
 
 void setup() {
-
+  
   Serial.begin(115200);
-
+  Serial.println(F("Starting..."));
+  
   setupInputs();
   setupOutputs();
   setupRadio();
 
-  controllerState = TRANSMITTING;  // for testing
 
+
+  controllerState = CALIBRATE_STICKS;  // for testing
+
+  if (controllerState == CALIBRATE_STICKS) {
+    calibration();
+  }
+
+  
+  processInputs();
+  // REQUIRE BUTTON PRESS TO GO INTO TRANSMIT MODE
+  // OR OTHER CHOICES LIKE 'CALIBRATE STICKS'
+
+  controllerState = TRANSMITTING;  // for testing
 } // SETUP
 
 
 void loop() {
   if (controllerState == TRANSMITTING) {
-    readInputs();
-    debounceInputs();
-    mapInputs();
+    processInputs();
     buildPackage();
     
     if (millis() - lastTransmission > txFreq) {
