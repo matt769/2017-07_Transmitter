@@ -1,5 +1,9 @@
 // FIX LOOSE CONNECTION ON STICK B GND
 
+// allow user to choose calibration
+// and store in EEPROM
+// upon startup load from EEPROM (incl checksum)
+
 // Read inputs (freq?)
 // provide package for the radio (freq?)
 // update LCD
@@ -7,7 +11,6 @@
 // how long to the LCD updates take?
 
 // ADD LATER
-// setup/calibration
 // store in EEPROM
 // menus via LCD
 // need to be able to go into menus while transmitting?
