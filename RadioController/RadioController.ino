@@ -1,5 +1,4 @@
 // FIX LOOSE CONNECTION ON STICK B GND
-// ADD DEBOUNCE TO BUTTONS
 
 // Read inputs (freq?)
 // provide package for the radio (freq?)
@@ -22,7 +21,8 @@
 
 #include <ShiftedLCD.h> //allows using the LCD as if there were no shift register between in and ATMEGA
 #include <SPI.h>
-#include "RF24.h"
+#include <RF24.h>
+#include <EEPROM.h>
 
 
 
