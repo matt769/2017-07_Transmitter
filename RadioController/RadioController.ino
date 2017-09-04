@@ -86,16 +86,18 @@ void setup() {
 
 
 
-  controllerState = CALIBRATE_STICKS;  // for testing
+  processInputs();
+  // REQUIRE BUTTON PRESS TO GO INTO TRANSMIT MODE
+  // OR OTHER CHOICES LIKE 'CALIBRATE STICKS'
+
+//  controllerState = CALIBRATE_STICKS;  // for testing
 
   if (controllerState == CALIBRATE_STICKS) {
     calibration();
   }
 
   
-  processInputs();
-  // REQUIRE BUTTON PRESS TO GO INTO TRANSMIT MODE
-  // OR OTHER CHOICES LIKE 'CALIBRATE STICKS'
+
 
   controllerState = TRANSMITTING;  // for testing
 } // SETUP
@@ -130,6 +132,8 @@ void loop() {
 
   }
   updateOutputs();
+//  printInputs();
+//  delay(500);
 
 } // LOOP
 

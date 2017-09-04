@@ -11,23 +11,23 @@ const byte pinButtonD = 4;    // toggle switch
 
 // CALIBRATION
 
-int AX_CENTRE;
-int AX_MIN;
-int AX_MAX;
-int AY_CENTRE;
-int AY_MIN;
-int AY_MAX;
-int BX_CENTRE;
-int BX_MIN;
-int BX_MAX;
-int BY_CENTRE;
-int BY_MIN;
-int BY_MAX;
+int AX_CENTRE = 493;
+int AX_MIN = 2;
+int AX_MAX = 984;
+int AY_CENTRE = 531;
+int AY_MIN = 1022;
+int AY_MAX = 40;
+int BX_CENTRE = 501;
+int BX_MIN = 5;
+int BX_MAX = 997;
+int BY_CENTRE = 532;
+int BY_MIN = 1020;
+int BY_MAX = 44;
 
 const int OUTPUT_MIN = 0;
 const int OUTPUT_MAX = 255;
 
-const int STICK_DEADBAND = 50; // applied to the analog read
+const int STICK_DEADBAND = 10; // applied to the analog read
 
 
 
@@ -46,13 +46,19 @@ void setupInputs() {
 
 
 void readInputs() {
+  delay(10);
   joystickAx = analogRead(pinJoystickAx);
+  delay(10);
   joystickAy = analogRead(pinJoystickAy);
+  delay(10);
   joystickAbTmp = digitalRead(pinJoystickAb);
+  delay(10);
   joystickBx = analogRead(pinJoystickBx);
-  //  Serial.println(joystickBx);
+  delay(10);
   joystickBy = analogRead(pinJoystickBy);
+  delay(10);
   joystickBbTmp = digitalRead(pinJoystickBb);
+  delay(10);
   buttonCTmp = digitalRead(pinButtonC);
   buttonDTmp = digitalRead(pinButtonD);
 }
@@ -103,32 +109,36 @@ void debounceInputs() {
 }
 
 
-
+//493 2 984
 // WHERE TO LIMIT THE ACTUAL READINGS??
 // WHERE TO ADD DEADBAND
 
-int constrainInput(int *input, int *centre, int *minimum, int *maximum) {
+void constrainInput(int *input, int *centre, int *minimum, int *maximum) {
   // account for high mins and low maxs
-
-  if (sign(*centre - *minimum) > 1) {
-    *input = min(*input, *maximum);
-    *input = max(*input, *minimum);
+  int tmpInput = *input;
+  
+  if ((*centre - *minimum) > 1) {
+    tmpInput = min(tmpInput, *maximum);
+    tmpInput = max(tmpInput, *minimum);
   }
   else {
-    *input = max(*input, *maximum);
-    *input = min(*input, *minimum);
+    tmpInput = max(tmpInput, *maximum);
+    tmpInput = min(tmpInput, *minimum);
   }
 
   if (abs(*input - *centre) > STICK_DEADBAND) {
+    *input = tmpInput;
+  }
+  else {
     *input = *centre;
   }
 }
 
 void constrainInputsAll(){
-  constrainInput(joystickAx, &AX_CENTRE, &AX_MIN, &AX_MAX);
-  constrainInput(joystickAy, &AY_CENTRE, &AY_MIN, &AY_MAX);
-  constrainInput(joystickBx, &BX_CENTRE, &BX_MIN, &BX_MAX);
-  constrainInput(joystickBy, &BY_CENTRE, &BY_MIN, &BY_MAX);  
+  constrainInput(&joystickAx, &AX_CENTRE, &AX_MIN, &AX_MAX);
+  constrainInput(&joystickAy, &AY_CENTRE, &AY_MIN, &AY_MAX);
+  constrainInput(&joystickBx, &BX_CENTRE, &BX_MIN, &BX_MAX);
+  constrainInput(&joystickBy, &BY_CENTRE, &BY_MIN, &BY_MAX);  
 }
 
 
@@ -284,24 +294,55 @@ void calibration() {
 
 
 void processInputs() {
-  Serial.print("xxx");
+//  Serial.print("xxx");
   readInputs();
+//  Serial.print(joystickAx);Serial.print('\t');
   debounceInputs();
+//  Serial.print(joystickAx);Serial.print('\t');
   constrainInputsAll();
+//  Serial.print(joystickAx);Serial.print('\t');
   mapInputs();
-  Serial.print("y");
+//  Serial.println(joystickAx);
+//  Serial.print("yyy");
 }
 
 
 
-
-void writeCalibrationToEeprom() {
-
+void writeIntegerToEeprom(int address, int data){
+  EEPROM.write(address,highByte(data));
+  address++;
+  EEPROM.write(address,lowByte(data));
 }
 
-void readCalibrationFromEeprom() {
-
+int readIntegerFromEeprom(int address){
+  byte high = EEPROM.read(address);
+  byte low = EEPROM.read(address);
+  int result=word(high,low);
+  return result;
 }
+
+
+//void writeCalibrationToEeprom() {
+//
+//int address = 0;
+//  
+//AX_CENTRE;
+//AX_MIN;
+//AX_MAX;
+//AY_CENTRE;
+//AY_MIN;
+//AY_MAX;
+//BX_CENTRE;
+//BX_MIN;
+//BX_MAX;
+//BY_CENTRE;
+//BY_MIN;
+//BY_MAX;
+//}
+//
+//void readCalibrationFromEeprom() {
+//
+//}
 
 // have some way of telling if settings are obviously not there?
 
